@@ -1,0 +1,1334 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>SmartBudget — Питание и бюджет</title>
+    <style>
+        :root {
+            --bg: #f6f7fb;
+            --card: #ffffff;
+            --accent: #2b6ef6;
+            --muted: #65748b;
+            --glass: rgba(43, 110, 246, 0.06);
+            --radius: 14px;
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: #122028
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 32px auto;
+            padding: 20px
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px
+        }
+
+        .logo {
+            display: flex;
+            gap: 12px;
+            align-items: center
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 20px
+        }
+
+        nav {
+            display: flex;
+            gap: 14px
+        }
+
+        nav a {
+            color: var(--muted);
+            text-decoration: none;
+            padding: 6px 10px;
+            border-radius: 8px
+        }
+
+        nav a:hover {
+            background: var(--glass);
+            color: var(--accent)
+        }
+
+        .top-grid {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 18px;
+            margin-bottom: 18px
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 18px;
+            box-shadow: 0 6px 18px rgba(12, 20, 45, 0.06)
+        }
+
+        .hero {
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center
+        }
+
+        .hero h1 {
+            margin: 0 0 8px;
+            font-size: 20px
+        }
+
+        .hero p {
+            margin: 0 0 12px;
+            color: var(--muted);
+            line-height: 1.5
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            align-items: center
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer
+        }
+
+        .btn.secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(43, 110, 246, 0.12)
+        }
+
+        .foods h3 {
+            margin-top: 0
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse
+        }
+
+        th,
+        td {
+            padding: 8px 6px;
+            text-align: left;
+            border-bottom: 1px solid #f0f2f6;
+            font-size: 14px
+        }
+
+        th {
+            color: var(--muted);
+            font-weight: 600
+        }
+
+        .small {
+            font-size: 13px;
+            color: var(--muted)
+        }
+
+        .mid-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 18px
+        }
+
+        .col-title {
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 0
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eef2ff;
+            color: var(--muted)
+        }
+
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(19, 41, 75, 0.03), transparent);
+            color: var(--muted)
+        }
+
+        .social {
+            display: flex;
+            gap: 10px
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cfd8e9
+        }
+
+        @media (max-width:980px) {
+            .top-grid {
+                grid-template-columns: 1fr
+            }
+
+            .mid-grid {
+                grid-template-columns: 1fr
+            }
+
+            .container {
+                padding: 12px
+            }
+        }
+
+        .panel {
+            padding: 12px;
+            border-radius: 12px;
+            background: #fbfdff
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(43, 110, 246, 0.08);
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 13px
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(4, 14, 26, 0.45);
+            z-index: 40
+        }
+
+        .modal.open {
+            display: flex
+        }
+
+        .modal .dialog {
+            width: 520px;
+            max-width: 96%;
+            background: var(--card);
+            padding: 18px;
+            border-radius: 14px
+        }
+
+        .row {
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        input[type=search],
+        select,
+        input[type=number],
+        input[type=text] {
+            padding: 8px;
+            border-radius: 10px;
+            border: 1px solid #e8eefb;
+            width: 100%
+        }
+
+        .money {
+            font-weight: 700;
+            font-size: 16px
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .tab {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .tab.active {
+            background: #eef2ff;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .review {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #eef2ff;
+            margin-bottom: 10px;
+            background: #fff;
+        }
+
+        .review .meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e6f0ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stars {
+            color: #f1c40f;
+            font-weight: 700;
+        }
+
+        .adv-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .adv-item {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px dashed #e6f2ff;
+            background: linear-gradient(180deg, #fbfeff, #fff);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid #f0f2f6;
+            padding: 8px 0;
+        }
+
+        .faq-q {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .faq-a {
+            margin-top: 6px;
+            color: var(--muted);
+            display: none;
+        }
+
+        .faq-a.open {
+            display: block;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        #foods-table {
+            display: block;
+            max-height: 200px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+
+        #foods-table thead {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 2;
+        }
+
+        #nutrition-recipes {
+            display: block;
+            max-height: 475px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+
+        #nutrition-recipes thead {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 2;
+        }
+
+        #nutrition-recipes .item {
+            opacity: 1 !important
+        }
+
+        .site-logo {
+            height: 50px;
+            width: auto;
+            margin-right: 10px;
+            border-radius: 12px;
+        }
+
+        #budget {
+            position: relative;
+            padding: 40px;
+            color: black;
+            overflow: hidden;
+        }
+
+        #budget::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("5357477050832781667.jpg") center/cover no-repeat;
+            opacity: 0.2;
+            z-index: 0;
+        }
+
+        #budget * {
+            position: relative;
+            z-index: 1;
+        }
+
+        #main-unit {
+            position: relative;
+            padding: 40px;
+            color: white;
+            overflow: hidden;
+        }
+
+        #main-unit::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("5357477050832781666.jpg") center/cover no-repeat;
+            opacity: 0.2;
+            z-index: 0;
+        }
+
+        #main-unit * {
+            position: relative;
+            z-index: 1;
+        }
+
+        #recipes {
+            position: relative;
+            padding: 40px;
+            color: black;
+            overflow: hidden;
+        }
+
+        #recipes::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("5359728850646466290.jpg") center/cover no-repeat;
+            opacity: 0.2;
+            z-index: 0;
+        }
+
+        #recipes * {
+            position: relative;
+            z-index: 1;
+        }
+
+        body {
+            background-color: rgba(0, 0, 120, 0.5);
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            display: inline-block;
+            padding: 6px 14px;
+            margin: 3px;
+            background-color: white;
+            color: black;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+
+        nav a:hover {
+            background-color: #ddd;
+            color: #000;
+        }
+
+        h1 {
+            color: black;
+        }
+
+        h1+p {
+            color: black;
+            font-size: 18px;
+        }
+
+        button {
+            background-color: #dbeafe !important;
+
+            color: black !important;
+            font-family: Arial, sans-serif;
+            font-size: 13px;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+    </style>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Название сайта</title>
+        <link rel="icon" type="image/png" href="5355225251019095684.jpg">
+    </head>
+
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo">
+                    <img src="5355225251019095684.jpg" alt="Логотип сайта" class="site-logo">
+                </div>
+
+                <div>
+                    <div class="brand">SmartBudget</div>
+                    <div style="font-size:12px;color:var(--muted)">Питание • Бюджет</div>
+                </div>
+            </div>
+            <nav>
+                <a href="#">Главная</a>
+                <a href="#recipes">Питание</a>
+                <a href="#budget">Бюджет</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+        </header>
+        <main>
+            <div class="top-grid">
+                <section class="card hero" id="main-unit">
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+                        <div>
+                            <h1>Сайт с вашим рационом</h1>
+                            <p>Питание — важная часть жизни. Мы поможем подобрать простое, сбалансированное меню и
+                                посчитаем основные показатели (Калории, Б/Ж/У). Попробуйте составить рацион в несколько
+                                кликов.</p>
+                            <div class="btn-row">
+                                <button class="btn" id="open-builder">Составить рацион</button>
+                                <button class="btn secondary" id="open-calculator">Рассчитать КБЖУ</button>
+                            </div>
+                        </div>
+                        <button class="btn" id="open-builder-2">Пошаговый план</button>
+                </section>
+
+                <aside class="card foods">
+                    <h3>КБЖУ популярных продуктов</h3>
+                    <div class="small">Фильтр по названию</div>
+                    <div style="margin:8px 0" class="row"><input id="filter" type="search"
+                            placeholder="найти продукт..."></div>
+                    <table id="foods-table">
+                        <thead>
+                            <tr>
+                                <th>Продукт</th>
+                                <th>Кал</th>
+                                <th>Б</th>
+                                <th>Ж</th>
+                                <th>У</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </aside>
+            </div>
+
+            <section class="mid-grid">
+                <div class="card" id="budget">
+                    <div class="col-title">Бюджет — учёт расходов на питание</div>
+                    <div class="small">Установи месячный бюджет, добавляй покупки и смотри остаток.</div>
+
+                    <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                        <input id="month-budget" type="number" placeholder="Месячный бюджет, ₸" />
+                        <button class="btn" id="save-budget">Сохранить</button>
+                    </div>
+
+                    <div style="margin-top:12px" class="panel">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+                            <div style="font-weight:700">Добавить покупку</div>
+                            <div class="small">Категории: Еда / Перекус / Напитки</div>
+                        </div>
+                        <div style="display:flex;gap:8px;margin-bottom:8px">
+                            <input id="expense-name" type="text" placeholder="Название покупки" />
+                            <input id="expense-cost" type="number" placeholder="Сумма, ₸" style="width:120px" />
+                        </div>
+                        <div style="display:flex;gap:8px;margin-bottom:8px">
+                            <select id="expense-cat">
+                                <option value="Еда">Еда</option>
+                                <option value="Перекус">Перекус</option>
+                                <option value="Напитки">Напитки</option>
+                            </select>
+                            <button class="btn" id="add-expense">Добавить</button>
+                        </div>
+                        <div id="expenses-list" style="max-height:160px;overflow:auto"></div>
+                    </div>
+
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+                        <div>
+                            <div class="small">Потрачено в месяце</div>
+                            <div id="spent" class="money">0 ₸</div>
+                        </div>
+                        <div>
+                            <div class="small">Осталось</div>
+                            <div id="remaining" class="money">0 ₸</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:12px" class="small">Список последних покупок обновляется автоматически и
+                        сохраняется в браузере.</div>
+                </div>
+
+                <div class="card" id="recipes">
+                    <div class="col-title">Питание — рецепты и план</div>
+                    <div class="small">Рецепты на каждый день • Лёгкие перекусы • Цели и отслеживание</div>
+
+                    <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+                        <button class="btn" id="open-recipes">Рецепты</button>
+                        <button class="btn secondary" id="open-meal-plan">План</button>
+                    </div>
+
+                    <div id="nutrition-recipes" style="margin-top:12px"></div>
+                    <div id="nutrition-plan" style="margin-top:12px;display:none"></div>
+                </div>
+
+                <div class="card" id="contacts">
+                    <div class="col-title">Отзывы и преимущества</div>
+                    <div class="small">Напиши нам — и мы поможем составить индивидуальный план.</div>
+
+                    <div style="margin-top:12px" class="tabs contacts-tabs">
+                        <button class="tab active" id="tab-reviews">Отзывы</button>
+                        <button class="tab" id="tab-advantages">Преимущества</button>
+                        <button class="tab" id="tab-faq">FAQ</button>
+                    </div>
+
+                    <div id="content-reviews" class="tab-content active" style="margin-top:12px">
+                        <div id="reviews-list"></div>
+                        <div style="margin-top:8px" class="small">Хотите оставить отзыв? Напишите нам на
+                            daryn.daniyaruly11@gmail.com</div>
+                    </div>
+
+                    <div id="content-advantages" class="tab-content" style="margin-top:12px">
+                        <div id="advantages-list" class="adv-list"></div>
+                    </div>
+
+                    <div id="content-faq" class="tab-content" style="margin-top:12px">
+                        <div id="faq-list"></div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="card"
+            style="display:flex;justify-content:space-between;align-items:center;min-height:56px;padding:20px 28px;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+                <div style="font-weight:700">© 2025 SmartBudget</div>
+                <div class="small">Политика конфиденциальности • Личные данные</div>
+                <div class="small">Следи за нами</div>
+                <div class="social" style="display:flex;gap:16px;">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+            <div class="footer-right"
+                style="margin-left:32px;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;transform:translateY(-30px);">
+                <div class="small" style="margin-bottom:6px;">Контакты</div>
+                <div class="small" style="margin-bottom:0;">daryn.daniyaruly11@gmail.com</div>
+                <div class="small" style="margin-bottom:0;">+7 771 348 7785</div>
+            </div>
+        </footer>
+
+
+    </div>
+
+    <div class="modal" id="modal-builder">
+        <div class="dialog">
+            <h3 id="modal-builder-title">Составить рацион</h3>
+            <div style="margin:8px 0" class="row">
+                <select id="select-food"></select>
+                <input id="q" type="number" placeholder="г" min="1" value="100" style="width:90px">
+            </div>
+            <div style="margin-top:12px">
+                <button class="btn" id="add-to-plan">Добавить</button>
+                <button class="btn secondary" id="close-builder">Закрыть</button>
+            </div>
+            <div style="margin-top:14px"><strong>Ваш план (добавлено через конструктор)</strong></div>
+            <div id="modal-plan" style="margin-top:8px"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal-calculator">
+        <div class="dialog">
+            <h3 id="modal-calculator-title">Рассчитать КБЖУ</h3>
+            <div style="margin:8px 0" class="row">
+                <select id="calc-select-food"></select>
+                <input id="calc-q" type="number" placeholder="г" min="1" value="100" style="width:90px">
+            </div>
+            <div style="margin-top:12px">
+                <button class="btn" id="calc-calc">Рассчитать</button>
+                <button class="btn secondary" id="close-calculator-modal">Закрыть</button>
+            </div>
+            <div style="margin-top:14px"><strong>Результат</strong></div>
+            <div id="calc-result" style="margin-top:8px"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="recipes-modal" style="display:none">
+        <div class="dialog">
+            <h3>Рецепты (встроенные)</h3>
+            <div id="recipes-list"></div>
+            <div style="margin-top:12px">
+                <button class="btn secondary" id="close-recipes">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function genId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+        const foods = [
+            { name: 'Хлеб белый', kcal: 265, b: 8, f: 3.2, c: 49 },
+            { name: 'Хлеб черный', kcal: 210, b: 7, f: 1.3, c: 43 },
+            { name: 'Батон', kcal: 250, b: 7.5, f: 2.9, c: 50 },
+
+            { name: 'Молоко 2.5%', kcal: 52, b: 3, f: 2.5, c: 4.7 },
+            { name: 'Кефир', kcal: 40, b: 3, f: 1, c: 4 },
+            { name: 'Ряженка', kcal: 65, b: 3, f: 3.6, c: 4.2 },
+            { name: 'Сметана 15%', kcal: 158, b: 3, f: 15, c: 3 },
+            { name: 'Творог 5%', kcal: 120, b: 17, f: 5, c: 1.8 },
+            { name: 'Сыр Российский', kcal: 360, b: 26, f: 29, c: 0 },
+            { name: 'Сыр плавленый', kcal: 280, b: 12, f: 22, c: 3 },
+
+            { name: 'Яйцо куриное', kcal: 155, b: 13, f: 11, c: 1.1 },
+            { name: 'Яйцо перепелиное', kcal: 168, b: 12.7, f: 11.1, c: 0.6 },
+
+            { name: 'Курица филе', kcal: 165, b: 31, f: 3.6, c: 0 },
+            { name: 'Курица окорочок', kcal: 215, b: 19, f: 15, c: 0 },
+            { name: 'Говядина', kcal: 250, b: 26, f: 15, c: 0 },
+            { name: 'Свинина', kcal: 290, b: 25, f: 20, c: 0 },
+            { name: 'Сосиски молочные', kcal: 260, b: 12, f: 23, c: 1.5 },
+            { name: 'Колбаса варёная', kcal: 270, b: 13, f: 23, c: 1 },
+            { name: 'Колбаса копчёная', kcal: 360, b: 18, f: 32, c: 2 },
+
+            { name: 'Рыба хек', kcal: 86, b: 16, f: 2, c: 0 },
+            { name: 'Рыба треска', kcal: 82, b: 18, f: 0.7, c: 0 },
+            { name: 'Рыба лосось', kcal: 208, b: 20, f: 13, c: 0 },
+            { name: 'Килька в томате', kcal: 140, b: 12, f: 8, c: 5 },
+            { name: 'Шпроты в масле', kcal: 363, b: 17, f: 32, c: 0 },
+
+            { name: 'Картофель', kcal: 77, b: 2, f: 0.4, c: 17 },
+            { name: 'Морковь', kcal: 41, b: 1, f: 0.2, c: 10 },
+            { name: 'Свекла', kcal: 43, b: 1.5, f: 0.1, c: 10 },
+            { name: 'Капуста белокочанная', kcal: 28, b: 1.8, f: 0.1, c: 6 },
+            { name: 'Огурцы', kcal: 15, b: 0.7, f: 0.1, c: 3 },
+            { name: 'Помидоры', kcal: 20, b: 0.9, f: 0.2, c: 4 },
+            { name: 'Лук репчатый', kcal: 40, b: 1.4, f: 0, c: 9 },
+            { name: 'Чеснок', kcal: 149, b: 6, f: 0.5, c: 33 },
+
+            { name: 'Яблоко', kcal: 52, b: 0.3, f: 0.2, c: 14 },
+            { name: 'Банан', kcal: 89, b: 1.1, f: 0.3, c: 23 },
+            { name: 'Апельсин', kcal: 47, b: 0.9, f: 0.1, c: 12 },
+            { name: 'Груша', kcal: 57, b: 0.4, f: 0.1, c: 15 },
+            { name: 'Виноград', kcal: 69, b: 0.6, f: 0.2, c: 18 },
+            { name: 'Арбуз', kcal: 30, b: 0.6, f: 0.2, c: 8 },
+            { name: 'Дыня', kcal: 34, b: 0.8, f: 0.2, c: 8 },
+            { name: 'Слива', kcal: 46, b: 0.7, f: 0.3, c: 11 },
+            { name: 'Персик', kcal: 39, b: 0.9, f: 0.3, c: 10 },
+
+            { name: 'Майонез', kcal: 680, b: 3, f: 70, c: 2 },
+            { name: 'Кетчуп', kcal: 100, b: 1, f: 0.2, c: 25 },
+            { name: 'Масло подсолнечное', kcal: 899, b: 0, f: 99.9, c: 0 },
+            { name: 'Масло сливочное', kcal: 748, b: 1, f: 82, c: 1 },
+            { name: 'Сахар', kcal: 387, b: 0, f: 0, c: 100 },
+            { name: 'Мёд', kcal: 320, b: 0.8, f: 0, c: 80 },
+            { name: 'Соль', kcal: 0, b: 0, f: 0, c: 0 },
+            { name: 'Вода', kcal: 0, b: 0, f: 0, c: 0 },
+            { name: 'Рис', kcal: 130, b: 2.4, f: 0.3, c: 28 },
+            { name: 'Овощи (смеш.)', kcal: 35, b: 2, f: 0.2, c: 7 },
+            { name: 'Картофель', kcal: 77, b: 2, f: 0.4, c: 6 },
+            { name: 'Морковь', kcal: 41, b: 1, f: 0.2, c: 10 },
+            { name: 'Свекла', kcal: 43, b: 1.5, f: 0.1, c: 10 },
+            { name: 'Капуста белокочанная', kcal: 28, b: 1.8, f: 0.1, c: 6 },
+            { name: 'Огурцы', kcal: 15, b: 0.7, f: 0.1, c: 3 },
+            { name: 'Помидоры', kcal: 20, b: 0.9, f: 0.2, c: 4 },
+            { name: 'Лук репчатый', kcal: 40, b: 1.4, f: 0, c: 9 },
+            { name: 'Чеснок', kcal: 149, b: 6, f: 0.5, c: 33 },
+
+            { name: 'Яблоко', kcal: 52, b: 0.3, f: 0.2, c: 14 },
+            { name: 'Банан', kcal: 89, b: 1.1, f: 0.3, c: 23 },
+            { name: 'Апельсин', kcal: 47, b: 0.9, f: 0.1, c: 12 },
+            { name: 'Груша', kcal: 57, b: 0.4, f: 0.1, c: 15 },
+            { name: 'Виноград', kcal: 69, b: 0.6, f: 0.2, c: 18 },
+            { name: 'Арбуз', kcal: 30, b: 0.6, f: 0.2, c: 8 },
+            { name: 'Дыня', kcal: 34, b: 0.8, f: 0.2, c: 8 },
+            { name: 'Слива', kcal: 46, b: 0.7, f: 0.3, c: 11 },
+            { name: 'Персик', kcal: 39, b: 0.9, f: 0.3, c: 10 },
+
+            { name: 'Майонез', kcal: 680, b: 3, f: 70, c: 2 },
+            { name: 'Кетчуп', kcal: 100, b: 1, f: 0.2, c: 25 },
+            { name: 'Булочка сдобная', kcal: 330, b: 7, f: 9, c: 55 },
+            { name: 'Сухари', kcal: 390, b: 11, f: 5, c: 75 },
+            { name: 'Печенье сахарное', kcal: 440, b: 6, f: 12, c: 74 },
+            { name: 'Вафли', kcal: 510, b: 5, f: 27, c: 63 },
+            { name: 'Шоколад молочный', kcal: 545, b: 7, f: 35, c: 52 },
+            { name: 'Конфеты карамель', kcal: 380, b: 0.1, f: 0.1, c: 98 },
+            { name: 'Зефир', kcal: 300, b: 0.8, f: 0, c: 80 },
+            { name: 'Мармелад', kcal: 320, b: 0.2, f: 0.1, c: 80 },
+            { name: 'Пастила', kcal: 320, b: 0.5, f: 0, c: 80 },
+            { name: 'Торт бисквитный', kcal: 360, b: 5, f: 17, c: 50 },
+
+            { name: 'Каша манная (сухая крупа)', kcal: 330, b: 10, f: 1, c: 70 },
+            { name: 'Каша кукурузная крупа', kcal: 330, b: 8, f: 1, c: 72 },
+            { name: 'Перловка', kcal: 320, b: 9, f: 1.1, c: 73 },
+            { name: 'Ячневая крупа', kcal: 320, b: 10, f: 1.3, c: 71 },
+            { name: 'Фасоль сухая', kcal: 300, b: 21, f: 2, c: 54 },
+            { name: 'Горох сухой', kcal: 300, b: 20, f: 2, c: 53 },
+            { name: 'Чечевица', kcal: 310, b: 24, f: 1.5, c: 50 },
+            { name: 'Нут (турецкий горох)', kcal: 315, b: 20, f: 6, c: 55 },
+            { name: 'Соя', kcal: 360, b: 34, f: 17, c: 17 },
+            { name: 'Арахис', kcal: 550, b: 26, f: 45, c: 10 },
+
+            { name: 'Грецкий орех', kcal: 654, b: 15, f: 65, c: 14 },
+            { name: 'Миндаль', kcal: 580, b: 21, f: 50, c: 19 },
+            { name: 'Фундук', kcal: 630, b: 15, f: 61, c: 16 },
+            { name: 'Кешью', kcal: 553, b: 18, f: 44, c: 30 },
+            { name: 'Семечки подсолнечные', kcal: 580, b: 20, f: 52, c: 17 },
+            { name: 'Курага', kcal: 215, b: 5, f: 0.3, c: 55 },
+            { name: 'Изюм', kcal: 270, b: 3, f: 0.5, c: 66 },
+            { name: 'Финики', kcal: 280, b: 2, f: 0.4, c: 75 },
+            { name: 'Чернослив', kcal: 240, b: 2, f: 0.7, c: 63 },
+            { name: 'Инжир сушёный', kcal: 250, b: 3, f: 0.8, c: 58 },
+
+            { name: 'Капуста квашеная', kcal: 20, b: 1, f: 0.1, c: 4 },
+            { name: 'Огурцы солёные', kcal: 15, b: 0.8, f: 0.1, c: 2 },
+            { name: 'Помидоры солёные', kcal: 20, b: 1, f: 0.1, c: 3 },
+            { name: 'Горошек зелёный консерв.', kcal: 55, b: 3, f: 0.2, c: 10 },
+            { name: 'Кукуруза консерв.', kcal: 95, b: 3.5, f: 1.5, c: 19 },
+            { name: 'Оливки', kcal: 145, b: 1, f: 15, c: 4 },
+            { name: 'Шампиньоны свежие', kcal: 27, b: 4, f: 0.3, c: 1 },
+            { name: 'Грибы консервированные', kcal: 25, b: 3, f: 0.3, c: 2 },
+            { name: 'Кабачок', kcal: 24, b: 0.6, f: 0.3, c: 5 },
+            { name: 'Баклажан', kcal: 25, b: 1, f: 0.2, c: 6 },
+
+            { name: 'Газировка (Кола)', kcal: 42, b: 0, f: 0, c: 11 },
+            { name: 'Сок яблочный', kcal: 46, b: 0.1, f: 0.1, c: 11 },
+            { name: 'Сок апельсиновый', kcal: 45, b: 0.7, f: 0.2, c: 10 },
+            { name: 'Компот', kcal: 60, b: 0.2, f: 0, c: 15 },
+            { name: 'Квас', kcal: 27, b: 0.3, f: 0, c: 6 },
+            { name: 'Пиво светлое', kcal: 43, b: 0.5, f: 0, c: 4 },
+            { name: 'Вино красное сухое', kcal: 85, b: 0.1, f: 0, c: 2.6 },
+            { name: 'Вино белое сухое', kcal: 80, b: 0.1, f: 0, c: 2.6 },
+            { name: 'Водка', kcal: 235, b: 0, f: 0, c: 0 },
+            { name: 'Коньяк', kcal: 240, b: 0, f: 0, c: 0 }
+        ];
+
+        const tbody = document.querySelector('#foods-table tbody');
+        function renderFoods(filter = '') {
+            tbody.innerHTML = '';
+            foods.filter(f => f.name.toLowerCase().includes(filter.toLowerCase())).forEach(f => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${f.name}</td><td>${f.kcal}</td><td>${f.b}</td><td>${f.f}</td><td>${f.c}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+        renderFoods();
+        document.getElementById('filter').addEventListener('input', e => renderFoods(e.target.value));
+
+
+        const nutritionRecipes = [
+
+            { id: genId(), name: 'Овсянка с фруктами', kcal: 320, b: 8, f: 5, c: 60, desc: 'Овсянка, яблоко, банан, орехи.' },
+            { id: genId(), name: 'Курица с рисом', kcal: 450, b: 35, f: 10, c: 55, desc: 'Куриное филе, рис, овощи.' },
+            { id: genId(), name: 'Салат овощной', kcal: 150, b: 3, f: 7, c: 18, desc: 'Огурцы, помидоры, зелень, масло.' },
+            { id: genId(), name: 'Омлет с овощами', kcal: 280, b: 20, f: 18, c: 8, desc: 'Яйца, болгарский перец, брокколи.' },
+            { id: genId(), name: 'Рис с овощами', kcal: 360, b: 6, f: 8, c: 68, desc: 'Рис, морковь, горох, специи.' },
+
+            { id: genId(), name: 'Борщ', kcal: 90, b: 5, f: 4, c: 10, desc: 'Свекла, капуста, картофель, мясо.' },
+            { id: genId(), name: 'Суп куриный', kcal: 120, b: 9, f: 5, c: 8, desc: 'Курица, лапша, морковь, зелень.' },
+            { id: genId(), name: 'Пюре с котлетой', kcal: 380, b: 18, f: 20, c: 32, desc: 'Картофель, мясная котлета, масло.' },
+            { id: genId(), name: 'Греческий салат', kcal: 180, b: 5, f: 12, c: 12, desc: 'Помидоры, огурцы, фета, оливки.' },
+            { id: genId(), name: 'Плов', kcal: 420, b: 15, f: 14, c: 60, desc: 'Рис, мясо, морковь, масло.' },
+
+            { id: genId(), name: 'Шашлык свиной', kcal: 330, b: 28, f: 22, c: 2, desc: 'Свинина, специи, лук.' },
+            { id: genId(), name: 'Сырники со сметаной', kcal: 290, b: 16, f: 12, c: 28, desc: 'Творог, яйца, мука, сметана.' },
+            { id: genId(), name: 'Блины с мёдом', kcal: 310, b: 7, f: 9, c: 52, desc: 'Мука, яйца, молоко, мёд.' },
+            { id: genId(), name: 'Пицца Маргарита', kcal: 280, b: 11, f: 10, c: 34, desc: 'Тесто, сыр, томаты, соус.' },
+            { id: genId(), name: 'Гамбургер', kcal: 340, b: 17, f: 19, c: 28, desc: 'Булка, котлета, сыр, овощи.' },
+
+            { id: genId(), name: 'Хот-дог', kcal: 310, b: 13, f: 17, c: 28, desc: 'Булка, сосиска, кетчуп, горчица.' },
+            { id: genId(), name: 'Суши с лососем', kcal: 190, b: 13, f: 6, c: 22, desc: 'Рис, нори, лосось.' },
+            { id: genId(), name: 'Ролл Калифорния', kcal: 210, b: 11, f: 8, c: 26, desc: 'Рис, крабовое мясо, авокадо, огурец.' },
+            { id: genId(), name: 'Салат Цезарь', kcal: 220, b: 12, f: 15, c: 10, desc: 'Курица, салат, сухарики, соус.' },
+            { id: genId(), name: 'Окрошка', kcal: 120, b: 6, f: 4, c: 14, desc: 'Кефир, картофель, яйца, огурцы.' }
+
+
+
+        ];
+
+        let nutritionPlan = JSON.parse(localStorage.getItem('nutrition_plan') || '[]');
+
+        function saveNutritionPlan() {
+            localStorage.setItem('nutrition_plan', JSON.stringify(nutritionPlan));
+        }
+
+        const nutritionRecipesEl = document.getElementById('nutrition-recipes');
+        const nutritionPlanEl = document.getElementById('nutrition-plan');
+        const openRecipesBtn = document.getElementById('open-recipes');
+        const openMealPlanBtn = document.getElementById('open-meal-plan');
+
+        function renderNutritionRecipes() {
+            nutritionRecipesEl.innerHTML = nutritionRecipes.map((r) => `
+                <div style="margin-bottom:12px;padding:10px;border:1px solid #eef2ff;border-radius:10px">
+                  <div style="font-weight:700">${r.name} — ${r.kcal} ккал</div>
+                  <div class="small">${r.desc}</div>
+                  <div style="margin-top:6px">
+                    <button class="btn small-btn" data-add="${r.id}">Добавить в план</button>
+                  </div>
+                </div>
+            `).join('');
+
+            nutritionRecipesEl.querySelectorAll('button[data-add]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-add');
+                    const recipe = nutritionRecipes.find(x => x.id === id);
+                    if (!recipe) return;
+                    const it = { id: genId(), source: 'recipe', refId: recipe.id, name: recipe.name, kcal: recipe.kcal, b: recipe.b, f: recipe.f, c: recipe.c };
+                    nutritionPlan.push(it);
+                    saveNutritionPlan();
+                    renderNutritionPlan();
+                });
+            });
+        }
+
+        function renderNutritionPlan() {
+            if (nutritionPlan.length === 0) {
+                nutritionPlanEl.innerHTML = '<div class="small">План пока пустой</div>';
+                return;
+            }
+            let totalK = 0, totalB = 0, totalF = 0, totalC = 0;
+            let html = '<div style="display:flex;flex-direction:column;gap:8px">';
+            nutritionPlan.forEach((r, i) => {
+                totalK += Number(r.kcal || 0); totalB += Number(r.b || 0); totalF += Number(r.f || 0); totalC += Number(r.c || 0);
+                const gramsText = r.grams ? `<div class="small">(${r.grams} г)</div>` : '';
+                html += `<div style="padding:8px;border:1px solid #ddd;border-radius:8px;display:flex;justify-content:space-between;align-items:center">
+                          <div><b>${r.name}</b> ${gramsText} <div class="small">Б:${r.b} / Ж:${r.f} / У:${r.c}</div></div>
+                          <div><button class="btn secondary small-btn" data-remove="${r.id}">✖</button></div>
+                        </div>`;
+            });
+            html += `</div>
+                     <div style="margin-top:12px;padding:10px;background:#eef2ff;border-radius:8px">
+                       <b>Итого:</b> ${Math.round(totalK)} ккал (Б:${totalB.toFixed(1)}, Ж:${totalF.toFixed(1)}, У:${totalC.toFixed(1)})
+                     </div>`;
+            nutritionPlanEl.innerHTML = html;
+
+            nutritionPlanEl.querySelectorAll('button[data-remove]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-remove');
+                    nutritionPlan = nutritionPlan.filter(x => x.id !== id);
+                    saveNutritionPlan();
+                    renderNutritionPlan();
+                    renderModalPlan(); 
+                });
+            });
+        }
+
+        function showRecipesView() {
+            nutritionRecipesEl.style.display = 'block';
+            nutritionPlanEl.style.display = 'none';
+            renderNutritionRecipes();
+        }
+        function showPlanView() {
+            nutritionRecipesEl.style.display = 'none';
+            nutritionPlanEl.style.display = 'block';
+            renderNutritionPlan();
+        }
+
+        openRecipesBtn.addEventListener('click', showRecipesView);
+        openMealPlanBtn.addEventListener('click', showPlanView);
+
+        showRecipesView();
+
+
+        const modalBuilder = document.getElementById('modal-builder');
+        const selectFood = document.getElementById('select-food');
+        const q = document.getElementById('q');
+        const addToPlanBtn = document.getElementById('add-to-plan');
+        const closeBuilderBtn = document.getElementById('close-builder');
+        const modalPlanEl = document.getElementById('modal-plan');
+        function fillSelectsForBuilder() {
+            selectFood.innerHTML = foods.map((f, i) => `<option value="${i}">${f.name}</option>`).join('');
+        }
+        fillSelectsForBuilder();
+
+        document.getElementById('open-builder').addEventListener('click', () => {
+            document.getElementById('modal-builder-title').textContent = 'Составить рацион';
+            modalBuilder.classList.add('open');
+            renderModalPlan();
+        });
+        document.getElementById('open-builder-2').addEventListener('click', () => {
+            document.getElementById('modal-builder-title').textContent = 'Составить рацион';
+            modalBuilder.classList.add('open');
+            renderModalPlan();
+        });
+
+        closeBuilderBtn.addEventListener('click', () => modalBuilder.classList.remove('open'));
+        modalBuilder.addEventListener('click', (e) => { if (e.target === modalBuilder) modalBuilder.classList.remove('open') });
+
+        addToPlanBtn.addEventListener('click', () => {
+            const idx = Number(selectFood.value);
+            const grams = Number(q.value) || 100;
+            const base = foods[idx];
+            const factor = grams / 100;
+            const item = {
+                id: genId(),
+                source: 'builder',
+                name: base.name,
+                grams,
+                kcal: Math.round(base.kcal * factor),
+                b: parseFloat((base.b * factor).toFixed(2)),
+                f: parseFloat((base.f * factor).toFixed(2)),
+                c: parseFloat((base.c * factor).toFixed(2))
+            };
+            nutritionPlan.push(item);
+            saveNutritionPlan();
+            renderModalPlan();
+            renderNutritionPlan();
+        });
+
+        function renderModalPlan() {
+            const fromBuilder = nutritionPlan.filter(x => x.grams);
+            if (fromBuilder.length === 0) {
+                modalPlanEl.innerHTML = '<div class="small">План пуст</div>';
+                return;
+            }
+            let html = '<table style="width:100%;border-collapse:collapse"><thead><tr><th>Продукт</th><th>г</th><th>Кал</th><th>Б</th><th>Ж</th><th>У</th><th></th></tr></thead><tbody>';
+            fromBuilder.forEach(it => {
+                html += `<tr>
+                          <td>${it.name}</td>
+                          <td>${it.grams}</td>
+                          <td>${it.kcal}</td>
+                          <td>${it.b}</td>
+                          <td>${it.f}</td>
+                          <td>${it.c}</td>
+                          <td><button class="btn secondary small-btn" data-del="${it.id}">Удалить</button></td>
+                         </tr>`;
+            });
+            html += '</tbody></table>';
+            modalPlanEl.innerHTML = html;
+
+            modalPlanEl.querySelectorAll('button[data-del]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const id = btn.getAttribute('data-del');
+                    nutritionPlan = nutritionPlan.filter(x => x.id !== id);
+                    saveNutritionPlan();
+                    renderModalPlan();
+                    renderNutritionPlan();
+                });
+            });
+        }
+
+        const modalCalc = document.getElementById('modal-calculator');
+        const calcSelect = document.getElementById('calc-select-food');
+        const calcQ = document.getElementById('calc-q');
+        const calcBtn = document.getElementById('calc-calc');
+        const calcResultEl = document.getElementById('calc-result');
+        const closeCalcBtn = document.getElementById('close-calculator-modal');
+
+        function fillCalcSelect() {
+            calcSelect.innerHTML = foods.map((f, i) => `<option value="${i}">${f.name}</option>`).join('');
+        }
+        fillCalcSelect();
+
+        document.getElementById('open-calculator').addEventListener('click', () => {
+            modalCalc.classList.add('open');
+            calcResultEl.innerHTML = '';
+        });
+        closeCalcBtn.addEventListener('click', () => modalCalc.classList.remove('open'));
+        modalCalc.addEventListener('click', e => { if (e.target === modalCalc) modalCalc.classList.remove('open') });
+
+        calcBtn.addEventListener('click', () => {
+            const idx = Number(calcSelect.value);
+            const grams = Number(calcQ.value) || 100;
+            const base = foods[idx];
+            const factor = grams / 100;
+            const kcal = Math.round(base.kcal * factor);
+            const b = parseFloat((base.b * factor).toFixed(2));
+            const f = parseFloat((base.f * factor).toFixed(2));
+            const c = parseFloat((base.c * factor).toFixed(2));
+            calcResultEl.innerHTML = `<div>${base.name} — ${grams} г</div>
+                                      <div class="small">Ккал: ${kcal} • Б: ${b} • Ж: ${f} • У: ${c}</div>`;
+        });
+
+        const monthBudgetInput = document.getElementById('month-budget');
+        const saveBudgetBtn = document.getElementById('save-budget');
+        const expenseName = document.getElementById('expense-name');
+        const expenseCost = document.getElementById('expense-cost');
+        const expenseCat = document.getElementById('expense-cat');
+        const addExpenseBtn = document.getElementById('add-expense');
+        const expensesList = document.getElementById('expenses-list');
+        const spentDiv = document.getElementById('spent');
+        const remainingDiv = document.getElementById('remaining');
+
+        let state = {
+            budget: 0,
+            expenses: []
+        };
+
+        function loadState() {
+            const raw = localStorage.getItem('sb_state');
+            if (raw) {
+                try { state = JSON.parse(raw); } catch (e) { state = { budget: 0, expenses: [] } };
+            }
+            monthBudgetInput.value = state.budget || '';
+            renderExpenses();
+            updateTotals();
+        }
+
+        function saveState() {
+            localStorage.setItem('sb_state', JSON.stringify(state));
+        }
+
+        saveBudgetBtn.addEventListener('click', () => {
+            const v = Number(monthBudgetInput.value) || 0;
+            state.budget = v;
+            saveState();
+            updateTotals();
+        });
+
+        addExpenseBtn.addEventListener('click', () => {
+            const name = expenseName.value.trim();
+            const cost = Number(expenseCost.value) || 0;
+            const cat = expenseCat.value;
+            if (!name || cost <= 0) {
+                alert('Введите название и сумму > 0');
+                return;
+            }
+            const item = { id: Date.now(), name, cost, cat, date: new Date().toISOString() };
+            state.expenses.unshift(item);
+            expenseName.value = ''; expenseCost.value = ''; expenseCat.value = 'еда';
+            saveState(); renderExpenses(); updateTotals();
+        });
+
+        function renderExpenses() {
+            if (state.expenses.length === 0) { expensesList.innerHTML = '<div class="small">Покупок нет</div>'; return }
+            let html = '<table style="width:100%;border-collapse:collapse"><thead><tr><th>Дата</th><th>Покупка</th><th>Кат.</th><th>Сумма</th><th></th></tr></thead><tbody>';
+            state.expenses.forEach(e => {
+                const d = new Date(e.date);
+                html += `<tr><td style="width:120px">${d.toLocaleDateString()}</td><td>${e.name}</td><td style="width:90px">${e.cat}</td><td style="width:100px">${e.cost} ₸</td><td style="width:60px"><button data-id="${e.id}" class="btn secondary small-btn">Удалить</button></td></tr>`;
+            });
+            html += '</tbody></table>';
+            expensesList.innerHTML = html;
+
+            expensesList.querySelectorAll('button[data-id]').forEach(b => {
+                b.addEventListener('click', () => {
+                    const id = +b.getAttribute('data-id');
+                    state.expenses = state.expenses.filter(x => x.id !== id);
+                    saveState(); renderExpenses(); updateTotals();
+                });
+            });
+        }
+
+        function updateTotals() {
+            const spent = state.expenses.reduce((s, e) => s + e.cost, 0);
+            const remaining = (Number(state.budget) || 0) - spent;
+            spentDiv.textContent = spent + ' ₸';
+            remainingDiv.textContent = (remaining >= 0 ? remaining : 0) + ' ₸';
+            if (remaining < 0) { remainingDiv.style.color = 'crimson'; } else { remainingDiv.style.color = 'inherit'; }
+        }
+
+        loadState();
+
+        const reviewsListEl = document.getElementById('reviews-list');
+        const advantagesListEl = document.getElementById('advantages-list');
+        const faqListEl = document.getElementById('faq-list');
+
+        const tabReviewsBtn = document.getElementById('tab-reviews');
+        const tabAdvantagesBtn = document.getElementById('tab-advantages');
+        const tabFaqBtn = document.getElementById('tab-faq');
+
+        const contentReviews = document.getElementById('content-reviews');
+        const contentAdvantages = document.getElementById('content-advantages');
+        const contentFaq = document.getElementById('content-faq');
+
+        const reviews = [
+            {
+                name: 'Алина',
+                text: 'Спасибо SmartBudget — легко составила рацион на неделю и видно точные калории. Приложение простое и удобное.',
+                rating: 5,
+                date: '2025-08-12',
+
+            },
+            {
+                name: 'Роман',
+                text: 'Отличная идея с бюджетом — теперь траты на еду под контролем. Удобный интерфейс.',
+                rating: 4,
+                date: '2025-07-30',
+            },
+            {
+                name: 'Кирилл',
+                text: 'Рецепты понятные, продукты доступные. План помогает придерживаться цели по калориям.',
+                rating: 5,
+                date: '2025-06-21',
+            }
+        ];
+
+
+        const advantages = [
+            { title: 'Простой старт', desc: 'Добавляйте продукты и рецепты за пару кликов — ничего лишнего.' },
+            { title: 'Интегрированный бюджет', desc: 'Следите за расходами на питание вместе с рационом.' },
+            { title: 'Подсчёт КБЖУ', desc: 'Автоматический подсчёт калорий, белков, жиров и углеводов.' },
+            { title: 'Сохраняется в браузере', desc: 'Планы и расходы сохраняются в localStorage — не потеряете данные.' },
+            { title: 'Адаптивный дизайн', desc: 'Выглядит аккуратно и на мобильных, и на десктопах.' }
+        ];
+
+        const faqs = [
+            { q: 'Как добавить рецепт в план?', a: 'Откройте карточку "Питание" → вкладка "Рецепты" → нажмите "Добавить в план". Рецепт появится во вкладке "План".' },
+            { q: 'Где сохраняются мои данные?', a: 'Планы и расходы хранятся локально в вашем браузере (localStorage). Никто кроме вас к ним не имеет доступа.' },
+            { q: 'Можно ли изменить калорийность продукта?', a: 'В текущей версии вы можете добавить продукт с нужным количеством грамм в конструкторе (кнопка "Составить рацион").' },
+            { q: 'Как удалить отзыв или отзыв оставить?', a: 'Отзывы сейчас демонстрационные. В будущем можно будет добавлять свои через форму — напишите на почту.' },
+            { q: 'Поддерживает ли приложение синхронизацию?', a: 'На данный момент синхронизация не реализована — данные остаются в браузере. Планируется экспорт/импорт в следующих версиях.' }
+        ];
+
+        function renderReviews() {
+            reviewsListEl.innerHTML = reviews.map(r => `
+              <div class="review">
+                <div class="meta">
+                  <div class="avatar">${r.name.charAt(0)}</div>
+                  <div>
+                    <div style="font-weight:700">${r.name} <span class="small" style="margin-left:8px">${new Date(r.date).toLocaleDateString()}</span></div>
+                    <div class="stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+                  </div>
+                </div>
+                <div>${r.text}</div>
+              </div>
+            `).join('');
+        }
+
+        function renderAdvantages() {
+            advantagesListEl.innerHTML = advantages.map(a => `
+              <div class="adv-item">
+                <div style="font-weight:700">${a.title}</div>
+                <div class="small">${a.desc}</div>
+              </div>
+            `).join('');
+        }
+
+        function renderFaq() {
+            faqListEl.innerHTML = faqs.map((f, i) => `
+              <div class="faq-item">
+                <div class="faq-q" data-idx="${i}">
+                  <div style="font-weight:700">${f.q}</div>
+                  <div class="small">+</div>
+                </div>
+                <div class="faq-a" id="faq-a-${i}">${f.a}</div>
+              </div>
+            `).join('');
+
+            faqListEl.querySelectorAll('.faq-q').forEach(qEl => {
+                qEl.addEventListener('click', () => {
+                    const idx = qEl.getAttribute('data-idx');
+                    const aEl = document.getElementById('faq-a-' + idx);
+                    const plus = qEl.querySelector('.small');
+                    if (aEl.classList.contains('open')) {
+                        aEl.classList.remove('open');
+                        plus.textContent = '+';
+                    } else {
+                        aEl.classList.add('open');
+                        plus.textContent = '−';
+                    }
+                });
+            });
+        }
+
+        function showContactsTab(tab) {
+            tabReviewsBtn.classList.remove('active');
+            tabAdvantagesBtn.classList.remove('active');
+            tabFaqBtn.classList.remove('active');
+            contentReviews.classList.remove('active');
+            contentAdvantages.classList.remove('active');
+            contentFaq.classList.remove('active');
+
+            if (tab === 'reviews') {
+                tabReviewsBtn.classList.add('active');
+                contentReviews.classList.add('active');
+            } else if (tab === 'advantages') {
+                tabAdvantagesBtn.classList.add('active');
+                contentAdvantages.classList.add('active');
+            } else if (tab === 'faq') {
+                tabFaqBtn.classList.add('active');
+                contentFaq.classList.add('active');
+            }
+        }
+
+        tabReviewsBtn.addEventListener('click', () => showContactsTab('reviews'));
+        tabAdvantagesBtn.addEventListener('click', () => showContactsTab('advantages'));
+        tabFaqBtn.addEventListener('click', () => showContactsTab('faq'));
+
+        renderReviews();
+        renderAdvantages();
+        renderFaq();
+        showContactsTab('reviews');
+        renderNutritionRecipes();
+        renderNutritionPlan();
+        renderModalPlan();
+        fillSelectsForBuilder();
+        fillCalcSelect();
+
+    </script>
+</body>
+
+</html>
