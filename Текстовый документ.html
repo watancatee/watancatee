@@ -301,6 +301,78 @@
             background: #fff;
         }
 
+        .budget-highlights {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .highlight-card {
+            border: 1px solid #eef2ff;
+            border-radius: 12px;
+            padding: 12px;
+            background: #fbfdff;
+        }
+
+        .highlight-title {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .progress {
+            height: 10px;
+            background: #e9eefc;
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2b6ef6, #5f9bff);
+            width: 62%;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            background: rgba(43, 110, 246, 0.08);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .quick-actions button {
+            flex: 1 1 140px;
+            background: #f5f8ff !important;
+            border: 1px dashed #d9e4ff;
+        }
+
+        .limit-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .limit-row strong {
+            color: #122028;
+        }
+
         .review .meta {
             display: flex;
             align-items: center;
@@ -625,6 +697,35 @@
                             <div class="small">Осталось</div>
                             <div id="remaining" class="money">0 ₸</div>
                         </div>
+                    </div>
+
+                    <div class="budget-highlights">
+                        <div class="highlight-card">
+                            <div class="highlight-title">Цель месяца</div>
+                            <div style="display:flex;justify-content:space-between;align-items:center">
+                                <strong>Сэкономить 15 000 ₸</strong>
+                                <span class="pill">62%</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar"></div>
+                            </div>
+                            <div class="limit-row">
+                                <span>Нужно ещё</span>
+                                <strong>5 700 ₸</strong>
+                            </div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="highlight-title">Лимиты категорий</div>
+                            <div class="limit-row"><span>Еда</span><strong>8 200 ₸ / 12 000 ₸</strong></div>
+                            <div class="limit-row"><span>Перекус</span><strong>3 100 ₸ / 4 500 ₸</strong></div>
+                            <div class="limit-row"><span>Напитки</span><strong>1 400 ₸ / 2 500 ₸</strong></div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <button class="btn secondary">Добавить подписку</button>
+                        <button class="btn secondary">Импорт расходов</button>
+                        <button class="btn secondary">Сформировать отчёт</button>
                     </div>
 
                     <div style="margin-top:12px" class="small">Список последних покупок обновляется автоматически и
